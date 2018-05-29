@@ -8,10 +8,10 @@ def sayhi(name) :
 	
 
 def outputzero(x,y) :
-	return 0#Comment 1
+	return 0# Comment 1
 	
 
-#Comment 2
+# Comment 2
 
 x=3
 print(x)
@@ -35,7 +35,7 @@ if x==5 or x==3**2:
 elif x==7:
 	print(x+6)
 else:
-	print("hello,world")
+	print("hello, world")
 
 
 	

@@ -38,6 +38,41 @@ def typeline(curline):
 
 def retelems(curline):
 	elems = re.split("(\+|\-|\/|\*|\=|to |\!| |\n|\t|\:|\^|\.|\(|\)|\,|\[|\]|\'|\")",curline)
+	b = len(elems)
+	i = 0
+	while i < b:
+		if elems[i] == "\"":
+			pos = elems[i+1:].index("\"") + i + 1
+			while elems[i+1] != "\"":
+				elems[i] += elems[i+1]
+				elems.pop(i+1)
+				b -= 1
+			elems[i] += "\""
+			elems.pop(i+1)
+			b -= 1
+		i += 1
+
+	elems = list(filter(None, elems))
+	b = len(elems)
+	print("b=" + str(b))
+	i = 0
+	pos = -1
+	while i < b:
+		print("i=" + str(i))
+		if elems[i] == "/":
+			print("slash detected")
+			if elems[i+1] == "/":
+				print("comment detected")
+				pos = i
+				break
+		i += 1
+	if pos != -1:
+		comstart = curline.rfind("//") + 2
+		comment = "#" + curline[comstart:]
+		elems[pos] = comment
+		elems = elems[:pos+1]
+		
+		
 	return elems
 
 def formatstmt(elems):
@@ -145,6 +180,8 @@ for i in a:
 	elems = retelems(i)
 	elems = list(filter(None, elems))
 	elems = [x for x in elems if x != " "]
+	print("===elems===")
+	print(elems)
 	if typeline(i) == "stmt":
 		sides = i.split("=")
 		pyline += formatstmt(elems)
