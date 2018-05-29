@@ -1,4 +1,4 @@
-# igcse-psudocode-parser
+# igcse-pseudocode-parser
 Stuff which are buggy:  
 * File IO  
   
