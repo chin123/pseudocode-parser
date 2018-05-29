@@ -1,5 +1,6 @@
 import re
 import sys
+import string
 
 def typeline(curline):
 	i = curline.split()
@@ -198,5 +199,6 @@ for i in a:
 		
 	if comp != "" and incase == 0:
 		pyline = "\t" + pyline
+	pyline = pyline.replace("//","#")
 	b.write(pyline + "\n")
 

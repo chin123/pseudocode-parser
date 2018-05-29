@@ -8,8 +8,10 @@ def sayhi(name) :
 	
 
 def outputzero(x,y) :
-	return 0
+	return 0#Comment 1
 	
+
+#Comment 2
 
 x=3
 print(x)
