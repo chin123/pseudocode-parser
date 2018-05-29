@@ -1,0 +1,62 @@
+procedure sayhi(name)
+print("hello"+name)
+endprocedure
+
+function outputzero(x,y)
+return 0
+endfunction
+
+x=3
+print(x)
+for i = 1 to 10
+	print(i)
+next i
+
+while x != 5
+print(x)
+x+=1
+endwhile
+
+if x==5 OR x == 3^2
+print(x)
+endif
+
+switch x:
+case 1:
+print("it\'s 1")
+case 5:
+print("it\'s 5")
+endswitch
+
+y="hello"
+print(y.length)
+print(y.substring(1,2))
+
+sayhi("chinmaya")
+
+array names[5]
+
+names[0]="Ahmad"
+names[1]="Ben" 
+names[2]="Catherine" 
+names[3]="Dana" 
+names[4]="Elijah"
+ 
+print(names[3])
+
+array board[8,8]
+
+board[outputzero(5,4),0]="rook"
+myFile = openRead("sample.txt")
+x = myFile.readLine()
+myFile.close()
+
+myFile = openRead("sample.txt")
+while NOT myFile.endOfFile()
+    print(myFile.readLine())
+endwhile
+myFile.close()
+
+myFile = openWrite("sample.txt")
+myFile.writeLine("Hello World")
+myFile.close()
