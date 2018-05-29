@@ -17,8 +17,16 @@ print(x)
 x+=1
 endwhile
 
+do
+answer=input("What's the password?")
+until answer=="computer"
+
 if x==5 OR x == 3^2
 print(x)
+elseif x==7
+print(x+6)
+else
+print("hello, world")
 endif
 
 switch x:

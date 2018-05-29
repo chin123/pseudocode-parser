@@ -1,3 +1,8 @@
+def eof(fp):
+	ans=fp.read(1)
+	fp.seek(fp.tell()-1)
+	return not ans
+
 def sayhi(name) :
 	print("hello"+name)
 	
@@ -17,15 +22,25 @@ while x!=5:
 	x+=1
 	
 
+while True:
+
+	answer=input("What's the password?")
+	if answer=="computer":
+		break
+
 if x==5 or x==3**2:
 	print(x)
-	
+elif x==7:
+	print(x+6)
+else:
+	print("hello,world")
+
 
 	
 if x == 1:
-	print("it\'s1")
+	print("it\'s 1")
 if x == 5:
-	print("it\'s5")
+	print("it\'s 5")
 
 
 y="hello"
@@ -52,12 +67,11 @@ x=myFile.readline()
 myFile.close()
 
 myFile=open("sample.txt")
-while myFile.read(1):
-	myFile.seek(myFile.tell() -1)
+while  not eof(myFile):
 	print(myFile.readline())
 	
 myFile.close()
 
 myFile=open("sample.txt", "w")
-myFile.write("HelloWorld")
+myFile.write("Hello World")
 myFile.close()

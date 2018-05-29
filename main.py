@@ -9,7 +9,9 @@ def typeline(curline):
 		return "while"
 	if "do" in i:
 		return "do"
-	for k in ["endif", "next", "endwhile", "endfunction", "endprocedure"]:
+	if "endif" in i:
+		return "endif"
+	for k in ["next", "endwhile", "endfunction", "endprocedure"]:
 		if k in i:
 			return "end"
 	if "endswitch" in i:
@@ -17,6 +19,10 @@ def typeline(curline):
 	if "until" in i:
 		return "until"
 	if "if" in i:
+		return "if"
+	if "elseif" in i:
+		return "if"
+	if "else" in i:
 		return "if"
 	if "switch" in i:
 		return "switch"
@@ -30,11 +36,11 @@ def typeline(curline):
 	return "stmt"
 
 def retelems(curline):
-	elems = re.split("(\+|\-|\/|\*|\=|to |\!| |\n|\t|\:|\^|\.|\(|\)|\,|\[|\])",curline)
+	elems = re.split("(\+|\-|\/|\*|\=|to |\!| |\n|\t|\:|\^|\.|\(|\)|\,|\[|\]|\'|\")",curline)
 	return elems
 
 def formatstmt(elems):
-	for i in range(1,len(elems)):
+	for i in range(0,len(elems)):
 		if elems[i] == "AND":
 			elems[i] = "and"
 		elif elems[i] == "OR":
@@ -47,6 +53,8 @@ def formatstmt(elems):
 			elems[i] = "//"
 		elif elems[i] == "^":
 			elems[i] = "**"
+		elif elems[i] == "elseif":
+			elems[i] = "elif"
 			
 	if "." in elems:
 		print("dot detected")
@@ -78,11 +86,13 @@ def formatstmt(elems):
 			elems[pos] = "write"
 		if "endOfFile" in elems:
 			print("eof detected")
-			pos = elems.index("endOfFile")
-			elems[pos] = 'read'
-			elems[pos + 2] = "1" + elems[pos+2]
-			elems[elems.index("not")] = ''
-			
+			pos = elems.index("endOfFile") - 1
+			elems.pop(pos)
+			elems.pop(pos)
+			elems.pop(pos)
+			elems.pop(pos)
+			pos -= 1
+			elems[pos] = "eof(" + elems[pos] + ")"
 			
 	for i in range(len(elems)):
 		if elems[i] == '[':
@@ -110,9 +120,11 @@ def formatstmt(elems):
 	for i in range(len(elems)):
 		retstr += elems[i]
 		if i != len(elems) - 1:
-			if elems[i] in ["for", "while", "if","and","or","not","return"]:
+			if elems[i] in ["for", "while", "if","and","or","not","return","else","elif"]:
 				retstr += ' '
 			if elems[i+1] in ["or","and","not"]:
+				retstr += ' '
+			if elems[i][-1].isalnum() and elems[i+1][0].isalnum() and elems[i] not in ["for", "while", "if","and","or","not","return","else","elif"] and elems[i+1] not in ["for", "while", "if","and","or","not","return","else","elif"]:
 				retstr += ' '
 	return retstr
 				
@@ -120,6 +132,7 @@ def formatstmt(elems):
 notabs = 0
 a = open(sys.argv[1], "r").readlines()
 b = open("output.py", "w")
+b.write("def eof(fp):\n\tans=fp.read(1)\n\tfp.seek(fp.tell()-1)\n\treturn not ans\n\n")
 comp = ""
 for i in a:
 	incase = 0
@@ -142,21 +155,23 @@ for i in a:
 	if typeline(i) == "while":
 		pyline += formatstmt(elems) + ":"
 		notabs += 1
-		if "read" in elems:
-			pyline += "\n" + "\t"*notabs + elems[elems.index("read")-2] + ".seek("+ elems[elems.index("read")-2]+ ".tell() -1)"
 	if typeline(i) == "do":
 		pyline += "while True:\n"
 		notabs += 1
 	if typeline(i) == "end":
 		notabs -= 1
+	if typeline(i) == "endif":
+		comp = ""
 	if typeline(i) == "until":
-		elems[0] = "then"
-		pyline += formatstmt(elems) + ":\n\tbreak"
+		elems[0] = "if "
+		pyline += formatstmt(elems) + ":\n" + "\t"*(notabs+1) + "break"
 		notabs -= 1
 	if typeline(i) == "if":
 		elems = [x for x in elems if x != "then"]
 		pyline += formatstmt(elems) + ":"
-		notabs += 1
+		#notabs += 1
+		comp = "a"
+		incase = 1
 	if typeline(i) == "switch":
 		comp = elems[1]
 	if typeline(i) == "case":
