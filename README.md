@@ -1,6 +1,6 @@
 # pseudocode-parser
 
-#Usage 
+# Usage 
 `python main.py <pseudocode file>`  
 `python main.py -l`  
 `python main.py --license`  
