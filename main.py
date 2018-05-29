@@ -1,7 +1,33 @@
+"""
+pseudocode-parser: parses pseudocode and outputs it's python equivalent into output.py
+Copyright (C) 2018  Chinmaya Krishnan Mahesh
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import re
 import sys
 import string
 
+# prints usage
+def usage():
+	print("USAGE:")
+	print("python main.py <pseudocode file> <output file>")
+	print("python main.py --license")
+	print("python main.py -l")
+
+# finds the purpose of the line read
 def typeline(curline):
 	i = curline.split()
 	if "for" in i:
@@ -36,6 +62,7 @@ def typeline(curline):
 		return "array"
 	return "stmt"
 
+# tokenizes the line into useful elements
 def retelems(curline):
 	elems = re.split("(\+|\-|\/|\*|\=|to |\!| |\n|\t|\:|\^|\.|\(|\)|\,|\[|\]|\'|\")",curline)
 	b = len(elems)
@@ -75,6 +102,7 @@ def retelems(curline):
 		
 	return elems
 
+# converts pseudocode tokens and functions into valid python ones
 def formatstmt(elems):
 	for i in range(0,len(elems)):
 		if elems[i] == "AND":
@@ -165,21 +193,54 @@ def formatstmt(elems):
 	return retstr
 				
 
-notabs = 0
-a = open(sys.argv[1], "r").readlines()
-b = open("output.py", "w")
-b.write("def eof(fp):\n\tans=fp.read(1)\n\tfp.seek(fp.tell()-1)\n\treturn not ans\n\n")
-comp = ""
+notabs = 0 # keeps track of the number of tabs to place before the line for indentation
+
+if len(sys.argv) == 1:
+	print("Not enough arguements!")
+	usage()
+	sys.exit()
+
+if len(sys.argv) == 2:
+	if sys.argv[1] == "--license" or sys.argv[1] == "-l":
+		print("pseudocode-parser: parses pseudocode and outputs it's python equivalent.")
+		print("Copyright (C) 2018  Chinmaya Krishnan Mahesh")
+
+		print("This program is free software: you can redistribute it and/or modify")
+		print("it under the terms of the GNU General Public License as published by")
+		print("the Free Software Foundation, either version 3 of the License, or")
+		print("(at your option) any later version.")
+		print()
+		print("This program is distributed in the hope that it will be useful,")
+		print("but WITHOUT ANY WARRANTY; without even the implied warranty of")
+		print("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the")
+		print("GNU General Public License for more details.")
+		print()
+		print("You should have received a copy of the GNU General Public License")
+		print("along with this program. If not, see <http://www.gnu.org/licenses/>.")
+	elif sys.argv[1][0] == "-":
+		print("Option " + sys.argv[1] + " not recognised!")
+		usage()
+	else:
+		print("Incorrect usage!")
+		usage()
+	sys.exit()
+		
+
+a = open(sys.argv[1], "r").readlines() # input is read line by line
+b = open(sys.argv[2], "w")
+
+b.write("def eof(fp):\n\tans=fp.read(1)\n\tfp.seek(fp.tell()-1)\n\treturn not ans\n\n") # hacky solution for an eof function
+comp = "" # used to maintain indentation in switch and if blocks
 for i in a:
 	incase = 0
 	i = i.lstrip()
 	i = i.rstrip()
 	print("notabs = " + str(notabs))
-	pyline = ""
+	pyline = "" # stores line to write to file
 	pyline += "\t" * notabs
 	elems = retelems(i)
-	elems = list(filter(None, elems))
-	elems = [x for x in elems if x != " "]
+	elems = list(filter(None, elems)) # remove all null elements
+	elems = [x for x in elems if x != " "] # remove all space elements
 	print("===elems===")
 	print(elems)
 	if typeline(i) == "stmt":
