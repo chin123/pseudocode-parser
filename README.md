@@ -1,5 +1,5 @@
 # pseudocode-parser
-Parses pseudocode following [these](http://www.ocr.org.uk/Images/202654-pseudocode-guide.pdf) specifications and outputs it's python equivalent.  
+Parses pseudocode following [these](http://www.ocr.org.uk/Images/202654-pseudocode-guide.pdf) specifications and outputs its python equivalent.  
 
 # Usage 
 `python main.py <pseudocode file> <python output file>`  
